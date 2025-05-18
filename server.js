@@ -23,7 +23,9 @@ const limiter = rateLimit({
 app.use(limiter);
 
 app.use(express.json());
-app.use(express.static('public'));
+
+// 정적 파일 제공 (build 디렉토리 사용)
+app.use(express.static(path.join(__dirname, 'build')));
 
 // MongoDB 연결
 mongoose.connect(process.env.MONGODB_URI, {
@@ -89,9 +91,9 @@ app.post('/api/recommendation', async (req, res) => {
     }
 });
 
-// 정적 파일 제공
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// 모든 요청을 index.html로 라우팅 (SPA 지원)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // 에러 핸들링 미들웨어
