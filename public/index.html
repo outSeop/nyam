@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디 벌금 관리</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>스터디 벌금 관리</h1>
+        
+        <div class="fine-section">
+            <h2>벌금 현황</h2>
+            <div class="total-fine">
+                <p>현재 모인 벌금: <span id="totalAmount">0</span>원</p>
+            </div>
+            
+            <div class="add-fine">
+                <h3>벌금 추가하기</h3>
+                <div class="input-group">
+                    <input type="text" id="memberName" placeholder="이름">
+                    <input type="number" id="fineAmount" placeholder="벌금 금액">
+                    <button onclick="addFine()">추가</button>
+                </div>
+            </div>
+            
+            <div class="fine-history">
+                <h3>벌금 내역</h3>
+                <ul id="fineList"></ul>
+            </div>
+        </div>
+
+        <div class="recommendation-section">
+            <h2>맛집 추천</h2>
+            <button onclick="getRecommendation()">추천받기</button>
+            <div id="recommendation" class="recommendation-result"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
