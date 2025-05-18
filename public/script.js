@@ -10,7 +10,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadFines() {
     try {
         const response = await fetch('/api/fines');
-        fines = await response.json();
+        const result = await response.json();
+        
+        if (!result.success) {
+            throw new Error(result.error || '데이터 로드 실패');
+        }
+        
+        fines = result.data;
         updateFineList();
         updateTotalAmount();
     } catch (error) {
@@ -41,8 +47,10 @@ async function addFine() {
             body: JSON.stringify({ name, amount })
         });
         
-        if (!response.ok) {
-            throw new Error('벌금 추가 실패');
+        const result = await response.json();
+        
+        if (!result.success) {
+            throw new Error(result.error || '벌금 추가 실패');
         }
         
         await loadFines();
@@ -85,8 +93,10 @@ async function deleteFine(id) {
                 method: 'DELETE'
             });
             
-            if (!response.ok) {
-                throw new Error('벌금 삭제 실패');
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || '벌금 삭제 실패');
             }
             
             await loadFines();

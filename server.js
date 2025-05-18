@@ -35,17 +35,39 @@ mongoose.connect(process.env.MONGODB_URI, {
     retryWrites: true,
     w: 'majority'
 })
-.then(() => console.log('MongoDB 연결 성공'))
-.catch(err => console.error('MongoDB 연결 실패:', err));
+.then(() => {
+    console.log('MongoDB Atlas 연결 성공');
+    console.log('데이터베이스:', mongoose.connection.name);
+})
+.catch(err => {
+    console.error('MongoDB Atlas 연결 실패:', err);
+    process.exit(1);
+});
+
+// 연결 이벤트 리스너
+mongoose.connection.on('error', err => {
+    console.error('MongoDB 연결 오류:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('MongoDB 연결이 끊어졌습니다.');
+});
 
 // API 엔드포인트
 // 모든 벌금 조회
 app.get('/api/fines', async (req, res) => {
     try {
+        console.log('벌금 조회 요청 받음');
         const fines = await Fine.find().sort({ date: -1 });
-        res.json(fines);
+        console.log('조회된 벌금:', fines);
+        res.json({ success: true, data: fines });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('벌금 조회 중 오류:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message,
+            data: [] 
+        });
     }
 });
 
@@ -54,9 +76,14 @@ app.post('/api/fines', async (req, res) => {
     try {
         const fine = new Fine(req.body);
         await fine.save();
-        res.status(201).json(fine);
+        res.status(201).json({ success: true, data: fine });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('벌금 추가 중 오류:', error);
+        res.status(400).json({ 
+            success: false, 
+            error: error.message,
+            data: null 
+        });
     }
 });
 
@@ -65,11 +92,22 @@ app.delete('/api/fines/:id', async (req, res) => {
     try {
         const fine = await Fine.findByIdAndDelete(req.params.id);
         if (!fine) {
-            return res.status(404).json({ error: '벌금 내역을 찾을 수 없습니다.' });
+            return res.status(404).json({ 
+                success: false, 
+                error: '벌금 내역을 찾을 수 없습니다.',
+                data: null 
+            });
         }
-        res.status(204).send();
+        res.status(200).json({ 
+            success: true, 
+            data: fine 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            success: false, 
+            error: error.message,
+            data: null 
+        });
     }
 });
 
