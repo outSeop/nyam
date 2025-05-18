@@ -10,7 +10,7 @@ const app = express();
 // 보안 설정
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://your-domain.com'] // 배포된 도메인으로 변경
+        ? ['https://nyam-irf9.onrender.com'] // 배포된 도메인으로 변경
         : 'http://localhost:3001'
 }));
 
@@ -24,8 +24,9 @@ app.use(limiter);
 
 app.use(express.json());
 
-// 정적 파일 제공 (build 디렉토리 사용)
-app.use(express.static(path.join(__dirname, 'build')));
+// 정적 파일 제공
+const staticPath = path.join(__dirname, 'public');
+app.use(express.static(staticPath));
 
 // MongoDB 연결
 mongoose.connect(process.env.MONGODB_URI, {
@@ -91,9 +92,9 @@ app.post('/api/recommendation', async (req, res) => {
     }
 });
 
-// 모든 요청을 index.html로 라우팅 (SPA 지원)
+// 모든 요청을 index.html로 라우팅
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // 에러 핸들링 미들웨어
