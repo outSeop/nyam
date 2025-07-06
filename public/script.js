@@ -130,6 +130,7 @@ async function getRecommendation() {
                 messages: [{
                     role: "user",
                     content: `현재 모인 벌금이 ${total}원인데, 3명에서 나눠먹을 수 있는 맛있는 음식을 추천해주세요. 
+                    가능한 예산을 전부 사용해서 추천해주세요.
                     예산에 맞는 메뉴와 가격도 함께 알려주세요. 
                     답변은 3-4문장으로 간단히 해주세요.`
                 }]
