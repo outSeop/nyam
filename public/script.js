@@ -128,42 +128,46 @@ function updateFineChart() {
     }
 
     fineChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'pie',
         data: {
             labels: names,
             datasets: [{
                 label: '개인별 벌금',
                 data: amounts,
-                backgroundColor: 'rgba(52, 152, 219, 0.7)',
-                borderColor: 'rgba(41, 128, 185, 1)',
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString() + '원';
-                        }
-                    }
-                }
-            },
             plugins: {
                 legend: {
-                    display: false
+                    position: 'top',
                 },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            let label = context.dataset.label || '';
+                            let label = context.label || '';
                             if (label) {
                                 label += ': ';
                             }
-                            if (context.parsed.y !== null) {
-                                label += context.parsed.y.toLocaleString() + '원';
+                            if (context.parsed !== null) {
+                                label += context.parsed.toLocaleString() + '원';
                             }
                             return label;
                         }

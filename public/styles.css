@@ -92,6 +92,10 @@ button:hover {
 
 .individual-summary {
     margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .individual-summary h3 {
@@ -113,10 +117,13 @@ button:hover {
 
 .individual-summary li:last-child {
     border-bottom: none;
+
 }
 
 .chart-container {
     margin-bottom: 1.5rem;
+    justify-content: center;
+    width: 70%;
 }
 
 .recommendation-result {
