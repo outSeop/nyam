@@ -1,5 +1,6 @@
 // 벌금 데이터를 저장할 배열
 let fines = [];
+let fineChart = null; // 차트 객체를 저장할 변수
 
 // 페이지 로드 시 벌금 내역 표시
 document.addEventListener('DOMContentLoaded', async () => {
@@ -19,6 +20,8 @@ async function loadFines() {
         fines = result.data;
         updateFineList();
         updateTotalAmount();
+        updateIndividualFines();
+        updateFineChart();
     } catch (error) {
         console.error('벌금 데이터 로드 실패:', error);
         alert('벌금 데이터를 불러오는데 실패했습니다.');
@@ -84,6 +87,93 @@ function updateTotalAmount() {
     const total = fines.reduce((sum, fine) => sum + fine.amount, 0);
     document.getElementById('totalAmount').textContent = total.toLocaleString();
 }
+
+// 개인별 납부 현황 업데이트 함수
+function updateIndividualFines() {
+    const individualFines = fines.reduce((acc, fine) => {
+        if (!acc[fine.name]) {
+            acc[fine.name] = 0;
+        }
+        acc[fine.name] += fine.amount;
+        return acc;
+    }, {});
+
+    const individualFineList = document.getElementById('individualFineList');
+    individualFineList.innerHTML = '';
+
+    for (const name in individualFines) {
+        const li = document.createElement('li');
+        li.textContent = `${name}: ${individualFines[name].toLocaleString()}원`;
+        individualFineList.appendChild(li);
+    }
+}
+
+// 벌금 현황 차트 업데이트 함수
+function updateFineChart() {
+    const individualFines = fines.reduce((acc, fine) => {
+        if (!acc[fine.name]) {
+            acc[fine.name] = 0;
+        }
+        acc[fine.name] += fine.amount;
+        return acc;
+    }, {});
+
+    const ctx = document.getElementById('fineChart').getContext('2d');
+    
+    const names = Object.keys(individualFines);
+    const amounts = Object.values(individualFines);
+
+    if (fineChart) {
+        fineChart.destroy();
+    }
+
+    fineChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: names,
+            datasets: [{
+                label: '개인별 벌금',
+                data: amounts,
+                backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                borderColor: 'rgba(41, 128, 185, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + '원';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y.toLocaleString() + '원';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 
 // 벌금 삭제 함수
 async function deleteFine(id) {
@@ -152,4 +242,4 @@ async function getRecommendation() {
         recommendationDiv.textContent = `추천을 불러오는데 실패했습니다: ${error.message}`;
         console.error('Error:', error);
     }
-} 
+}

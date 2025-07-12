@@ -76,6 +76,11 @@ button:hover {
 
 .fine-history ul {
     list-style: none;
+    max-height: 300px; /* 스크롤을 위한 최대 높이 설정 */
+    overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤바 표시 */
+    border: 1px solid #eee;
+    padding: 0.5rem;
+    border-radius: 4px;
 }
 
 .fine-history li {
@@ -83,6 +88,35 @@ button:hover {
     border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
+}
+
+.individual-summary {
+    margin-top: 1.5rem;
+}
+
+.individual-summary h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.individual-summary ul {
+    list-style: none;
+    padding: 1rem;
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+.individual-summary li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.individual-summary li:last-child {
+    border-bottom: none;
+}
+
+.chart-container {
+    margin-bottom: 1.5rem;
 }
 
 .recommendation-result {
@@ -102,4 +136,4 @@ button:hover {
     .input-group {
         flex-direction: column;
     }
-} 
+}
